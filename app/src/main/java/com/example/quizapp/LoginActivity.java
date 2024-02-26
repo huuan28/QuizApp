@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.quizapp.model.User;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,8 +56,16 @@ public class LoginActivity extends AppCompatActivity {
                 LoadInfo();
                 String selection = "id = ? AND password = ?";
                 Cursor c = database.query("tbUser", null, selection, new String[]{id,pw}, null, null, null);
-                if(c.getCount()>0){
-                    Intent it = new Intent(LoginActivity.this,MainActivity.class);
+                if(c.getCount()>0) {
+                    c.moveToNext();
+                    String name = c.getString(1);
+                    String gender = c.getString(3);
+                    String birth = c.getString(4);
+                    String email = c.getString(5);
+                    int avt = c.getInt(6);
+                    User user = new User(id, name, pw, gender, birth, email, avt);
+                    Intent it = new Intent(LoginActivity.this, MainActivity.class);
+                    it.putExtra("user", user);
                     startActivity(it);
                 }
                 c.close();
@@ -92,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
             edtPw.setText(pw);
         }
     }
-
     private void Init() {
         edtUserID = findViewById(R.id.edtUserID);
         edtPw = findViewById(R.id.edtPw);
@@ -113,6 +122,9 @@ public class LoginActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
             }
+        }
+        else {
+            Toast.makeText(this, "Database is Exist", Toast.LENGTH_LONG).show();
         }
     }
     public void CopyDataBaseFromAsset() {

@@ -24,8 +24,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button btnRegister;
     RadioGroup rgGender;
     SQLiteDatabase db;
-    String id, pw, name, confirmPw;
-    int gender;
+    String id, pw, name, confirmPw, gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +41,15 @@ public class RegisterActivity extends AppCompatActivity {
                 GetInfo();
                 if(CheckFormat()){
                     if(ComparePw()){
+                        int avt = R.drawable.avt_default;
+                        String birth = "01-01-1990";
                         ContentValues ct = new ContentValues();
                         ct.put("id", id);
                         ct.put("name", name);
                         ct.put("password", pw);
                         ct.put("gender", gender);
+                        ct.put("avatar", avt);
+                        ct.put("birth", birth);
                         if (db.insert("tbUser", null, ct) != -1) {
                             Toast.makeText(RegisterActivity.this, "Tạo thành công", Toast.LENGTH_SHORT).show();
                             intent.putExtra("id", id);
@@ -90,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this,"Chưa xác nhận mật khẩu", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(gender==-1){
+        if(gender==""){
             Toast.makeText(RegisterActivity.this,"Chưa chọn giới tính", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -122,16 +125,11 @@ public class RegisterActivity extends AppCompatActivity {
         pw = edtPw_reg.getText().toString();
         confirmPw = edtConfirmPw.getText().toString();
         name = edtName.getText().toString();
-        gender = -1;
+        gender = "";
         int select = rgGender.getCheckedRadioButtonId();
-        String kq = "";
         if (select != -1) {
             RadioButton rb = findViewById(select);
-            kq = rb.getText().toString();
-            if (kq.equals("Nam")) {
-                gender = 1;
-            }
-            else gender = 0;
+            gender = rb.getText().toString();
         }
     }
 
